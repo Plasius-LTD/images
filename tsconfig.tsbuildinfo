@@ -1,0 +1,1 @@
+{"root":["./src/detectformat.ts","./src/index.ts","./src/parse/index.ts","./src/parse/parsejpeg.ts","./src/parse/parsepng.ts","./src/parse/parsesvg.ts","./src/parse/parsewebp.ts","./src/validators/avatarvalidator.ts","./src/validators/index.ts","./src/validators/svgvalidator.ts"],"version":"5.9.3"}
