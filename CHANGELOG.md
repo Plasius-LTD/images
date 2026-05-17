@@ -18,7 +18,8 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
   - (placeholder)
 
 - **Security**
-  - (placeholder)
+  - Reject CSS-bearing SVG avatar content such as `<style>` blocks, inline
+    `style` attributes, and `url(...)` references.
 
 ## [1.0.11] - 2026-05-13
 

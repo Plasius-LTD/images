@@ -23,6 +23,11 @@ npm install @plasius/images
 import { validateImageUpload } from "@plasius/images";
 ```
 
+SVG avatar uploads intentionally support a restricted subset of SVG. The
+validator rejects CSS-bearing SVG content such as `<style>` elements, inline
+`style` attributes, and `url(...)` CSS references instead of attempting partial
+CSS sanitization on untrusted input.
+
 ## Development
 
 ```bash
@@ -37,6 +42,10 @@ npm test
 - Code of conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - ADRs: [docs/adrs](./docs/adrs)
 - Legal docs: [legal](./legal)
+
+For `Plasius-LTD/images#7`, the parent hardening flag
+`repo-review.2026-05-17.hardening.enabled` is runtime `N/A` because this
+package publishes validation helpers and does not evaluate rollout state.
 
 ## License
 
