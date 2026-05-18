@@ -4,6 +4,18 @@ import type { Element as XmlElement } from "@xmldom/xmldom";
 
 const UNSUPPORTED_CSS_REFERENCE_PATTERN = /url\s*\(|@import\b|expression\s*\(/i;
 
+function unescapeCssReferences(value: string): string {
+  return value
+    .replace(/\\([0-9a-fA-F]{1,6})\s?/g, (match, hex) => {
+      const codePoint = Number.parseInt(hex, 16);
+      if (Number.isNaN(codePoint)) {
+        return match;
+      }
+      return String.fromCodePoint(codePoint);
+    })
+    .replace(/\\(.)/g, "$1");
+}
+
 export function sanitiseSVG(
   svgText: string,
   options: {
@@ -147,7 +159,11 @@ function collectUnsupportedCssBearingContent(svgText: string): string[] {
           continue;
         }
 
-        if (UNSUPPORTED_CSS_REFERENCE_PATTERN.test(attr.value)) {
+        const unescapedAttributeValue = unescapeCssReferences(attr.value);
+        if (
+          UNSUPPORTED_CSS_REFERENCE_PATTERN.test(attr.value) ||
+          UNSUPPORTED_CSS_REFERENCE_PATTERN.test(unescapedAttributeValue)
+        ) {
           findings.push(`${tagName}.${attr.name}`);
         }
       }
