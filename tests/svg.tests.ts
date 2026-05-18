@@ -51,25 +51,94 @@ describe("svg sanitizer", () => {
     expect(cleaned).toContain("<custom");
     expect(cleaned).toContain("data-foo=\"bar\"");
   });
+
+  it("strips inline style and xlink attributes during generic sanitization", () => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect width="10" height="10" style="fill:red" xlink:href="https://example.com/a.svg#b" /></svg>`;
+
+    const { svg: cleaned, audit } = sanitiseSVG(svg, {
+      allowedTags: ["svg", "rect"],
+      allowedAttributes: {
+        "*": ["width", "height", "xmlns"],
+      },
+      allowComments: false,
+      allowUnknownElements: false,
+      allowUnknownAttributes: false,
+    });
+
+    expect(cleaned).not.toContain("style=");
+    expect(cleaned).not.toContain("xlink:href");
+    expect(cleaned).not.toContain("xmlns:xlink");
+    expect(audit.strippedAttributes).toEqual(
+      expect.arrayContaining([
+        "svg.xmlns:xlink",
+        "rect.style",
+        "rect.xlink:href",
+      ])
+    );
+  });
+
+  it("rejects malformed SVG input during sanitization", () => {
+    expect(() =>
+      sanitiseSVG("<svg><rect></svg>", {
+        allowedTags: ["svg", "rect"],
+        allowedAttributes: {
+          "*": ["xmlns"],
+        },
+        allowComments: false,
+        allowUnknownElements: false,
+        allowUnknownAttributes: false,
+      })
+    ).toThrow();
+  });
 });
 
 describe("svg avatar validation", () => {
   it("returns sanitized svg metadata", async () => {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" style="fill: red" /></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="#ff0000" /></svg>`;
     const result = await validateSvgAvatar(Buffer.from(svg, "utf8"));
 
     expect(result.format).toBe("svg");
     expect(result.width).toBe(0);
     expect(result.height).toBe(0);
-    expect(result.safeBuffer.toString("utf8")).not.toContain("style=");
+    expect(result.safeBuffer.toString("utf8")).toContain('fill="#ff0000"');
+  });
+
+  it("rejects inline style attributes in avatar SVGs", async () => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" style="fill: red" /></svg>`;
+
+    await expect(
+      validateSvgAvatar(Buffer.from(svg, "utf8"))
+    ).rejects.toThrow("SVG contains unsupported CSS-bearing content: rect.style");
+  });
+
+  it("rejects style elements in avatar SVGs", async () => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><style>rect{fill:red}</style><rect width="10" height="10" /></svg>`;
+
+    await expect(
+      validateSvgAvatar(Buffer.from(svg, "utf8"))
+    ).rejects.toThrow("SVG contains unsupported CSS-bearing content: <style>");
+  });
+
+  it("rejects CSS url references in avatar SVGs", async () => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="url(https://example.com/fill.svg#x)" /></svg>`;
+
+    await expect(
+      validateSvgAvatar(Buffer.from(svg, "utf8"))
+    ).rejects.toThrow("SVG contains unsupported CSS-bearing content: rect.fill");
   });
 
   it("rejects oversized svgs", async () => {
     const payload = " ".repeat(256 * 1024 + 10);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg">${payload}</svg>`;
 
-    expect(() => validateSvgAvatar(Buffer.from(svg, "utf8"))).toThrow(
+    await expect(validateSvgAvatar(Buffer.from(svg, "utf8"))).rejects.toThrow(
       "SVG too large"
     );
+  });
+
+  it("rejects malformed SVG input during avatar validation", async () => {
+    await expect(
+      validateSvgAvatar(Buffer.from("<svg><rect></svg>", "utf8"))
+    ).rejects.toThrow();
   });
 });

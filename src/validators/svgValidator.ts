@@ -2,6 +2,8 @@ import type { ImageValidationResult } from "./avatarValidator.js";
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import type { Element as XmlElement } from "@xmldom/xmldom";
 
+const UNSUPPORTED_CSS_REFERENCE_PATTERN = /url\s*\(|@import\b|expression\s*\(/i;
+
 export function sanitiseSVG(
   svgText: string,
   options: {
@@ -35,8 +37,6 @@ export function sanitiseSVG(
   const doc = parser.parseFromString(svgText, "image/svg+xml");
 
   function cleanNode(node: Node | null) {
-    // TODO: optionally sanitize <style> elements and inline style attributes
-
     if (node === null) return;
 
     if (node.nodeType === 8 /* Comment */ && !options.allowComments) {
@@ -111,10 +111,69 @@ export function sanitiseSVG(
   };
 }
 
-export function validateSvgAvatar(
+function collectUnsupportedCssBearingContent(svgText: string): string[] {
+  const parser = new DOMParser({
+    onError: (
+      level: "warning" | "error" | "fatalError",
+      msg: string
+    ): void => {
+      switch (level) {
+        case "warning":
+          break;
+        default:
+          throw new Error(msg);
+      }
+    },
+  });
+  const doc = parser.parseFromString(svgText, "image/svg+xml");
+  const findings: string[] = [];
+
+  function inspectNode(node: Node | null): void {
+    if (node === null) return;
+
+    if (node.nodeType === 1 /* Element */) {
+      const el = node as unknown as XmlElement;
+      const tagName = el.tagName.toLowerCase();
+
+      if (tagName === "style") {
+        findings.push("<style>");
+      }
+
+      for (const attr of Array.from(el.attributes)) {
+        const attrName = attr.name.toLowerCase();
+
+        if (attrName === "style") {
+          findings.push(`${tagName}.style`);
+          continue;
+        }
+
+        if (UNSUPPORTED_CSS_REFERENCE_PATTERN.test(attr.value)) {
+          findings.push(`${tagName}.${attr.name}`);
+        }
+      }
+    }
+
+    for (const child of Array.from(node.childNodes)) {
+      inspectNode(child);
+    }
+  }
+
+  inspectNode(doc.documentElement as unknown as Node);
+
+  return findings;
+}
+
+export async function validateSvgAvatar(
   buffer: Buffer
 ): Promise<ImageValidationResult> {
   const svgText = buffer.toString("utf8");
+  const unsupportedCssContent = collectUnsupportedCssBearingContent(svgText);
+
+  if (unsupportedCssContent.length > 0) {
+    throw new Error(
+      `SVG contains unsupported CSS-bearing content: ${unsupportedCssContent.join(", ")}`
+    );
+  }
 
   const { svg: cleanSvg } = sanitiseSVG(svgText, {
     allowedTags: [
@@ -172,11 +231,11 @@ export function validateSvgAvatar(
     throw new Error("SVG too large (max 256 KB)");
   }
 
-  return Promise.resolve({
+  return {
     width: 0, // SVG is scalable, can’t guarantee pixel dimensions
     height: 0,
     format: "svg",
     size: cleanBuffer.length,
     safeBuffer: cleanBuffer,
-  });
+  };
 }
