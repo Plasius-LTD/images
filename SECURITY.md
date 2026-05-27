@@ -15,3 +15,10 @@ We aim to acknowledge your report within 2 business days and to provide a more d
 ## Disclosure Policy
 
 We request that you give us the opportunity to address the vulnerability before publicly disclosing it. We will coordinate with you on public disclosure once a fix is available and deployed.
+
+## SVG Upload Notes
+
+SVG avatar uploads are treated as untrusted input. The supported subset
+explicitly rejects CSS-bearing content, including `<style>` elements, inline
+`style` attributes, and CSS `url(...)` references, rather than trying to
+normalize arbitrary CSS during sanitization.
