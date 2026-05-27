@@ -15,6 +15,7 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
   - Removed the unused `react` and `@azure/cosmos` peer dependencies so the published package contract matches the runtime image helper surface.
 
 - **Fixed**
+  - Removed the deprecated direct `@types/uuid` dev dependency because `uuid` now ships its own type definitions.
   - (placeholder)
 
 - **Security**
