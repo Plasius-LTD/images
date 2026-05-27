@@ -6,11 +6,8 @@ const UNSUPPORTED_CSS_REFERENCE_PATTERN = /url\s*\(|@import\b|expression\s*\(/i;
 
 function unescapeCssReferences(value: string): string {
   return value
-    .replace(/\\([0-9a-fA-F]{1,6})\s?/g, (match, hex) => {
+    .replace(/\\([0-9a-fA-F]{1,6})\s?/g, (_match, hex) => {
       const codePoint = Number.parseInt(hex, 16);
-      if (Number.isNaN(codePoint)) {
-        return match;
-      }
       return String.fromCodePoint(codePoint);
     })
     .replace(/\\(.)/g, "$1");

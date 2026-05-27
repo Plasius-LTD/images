@@ -135,6 +135,14 @@ describe("svg avatar validation", () => {
     ).rejects.toThrow("SVG contains unsupported CSS-bearing content: rect.fill");
   });
 
+  it("rejects simple escaped CSS url references in avatar SVGs", async () => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="u\\rl(https://example.com/fill.svg#x)" /></svg>`;
+
+    await expect(
+      validateSvgAvatar(Buffer.from(svg, "utf8"))
+    ).rejects.toThrow("SVG contains unsupported CSS-bearing content: rect.fill");
+  });
+
   it("rejects oversized svgs", async () => {
     const payload = " ".repeat(256 * 1024 + 10);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg">${payload}</svg>`;
