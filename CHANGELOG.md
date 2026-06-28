@@ -12,6 +12,20 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
   - (placeholder)
 
 - **Changed**
+  - (placeholder)
+
+- **Fixed**
+  - (placeholder)
+
+- **Security**
+  - (placeholder)
+
+## [1.0.16] - 2026-06-28
+
+- **Added**
+  - (placeholder)
+
+- **Changed**
   - Refreshed the published `sharp` dependency to `0.35.2`.
   - (placeholder)
 
@@ -206,7 +220,7 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 
 ---
 
-[Unreleased]: https://github.com/Plasius-LTD/images/compare/v1.0.15...HEAD
+[Unreleased]: https://github.com/Plasius-LTD/images/compare/v1.0.16...HEAD
 
 ## [1.0.0] - 2026-02-11
 
@@ -233,3 +247,4 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 [1.0.12]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.12
 [1.0.14]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.14
 [1.0.15]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.15
+[1.0.16]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.16
