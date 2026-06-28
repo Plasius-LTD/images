@@ -30,7 +30,7 @@
   "license": "MIT",
   "dependencies": {
     "@xmldom/xmldom": "^0.9.10",
-    "sharp": "^0.34.5"
+    "sharp": "^0.35.2"
   },
   "devDependencies": {
     "@azure/cosmos": "^4.9.3",
