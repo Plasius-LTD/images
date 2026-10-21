@@ -55,11 +55,33 @@ MIT
 ## Release integrity
 
 CI keeps the administrative contributor registry outside Git and npm package
-artifacts using exact, case-normalised path checks. CI runs on approved
-GitHub-hosted runners for same-repository pull requests and `main`, with
-package-manager cache finalization disabled; fork PR code is denied.
-Publication uses the GitHub-hosted `production` job with Node 24 and a pinned
-npm 11.6.2 client. It is token-free and proceeds only while the prepared SHA
-is the exact `main` head after successful push-triggered CI. Do not dispatch CD
-until the npm trusted-publisher binding is verified.
+artifacts using exact, case-normalised path checks. The public CI workflow
+accepts only pushes in `Plasius-LTD/images` and resolves both validation jobs
+to the literal `Public CI - Quarantined` runner group with
+`[self-hosted, Linux, X64]` labels. Fork and pull-request events, reusable calls,
+manual dispatch, caller-selected runners and hosted fallback are not admitted.
+Branch pushes require explicit reviewed workflow admission in that group;
+`main` is already admitted. Jobs have 15/10 minute limits, checkout credential
+persistence and package-manager cache finalization are disabled, and clean
+`npm ci` retains lint, types, audit, build, 80% LCOV, source/index admission and
+final package-manifest gates.
+
+Publication uses the existing literal `ubuntu-latest` GitHub-hosted `production`
+job with Node 24 and pinned npm 11.6.2. It is token-free and proceeds only while
+the prepared SHA is the exact `main` head after successful push-triggered CI.
+Verify public visibility, the production environment, trusted-publisher
+repository/workflow/main/environment identity and the next unused version
+before dispatching `cd.yml` with `phase=prepare` and `bump=patch`. The pipeline
+alone generates release metadata, queues exact-commit CI, and dispatches the
+publish phase; do not edit versioned changelog sections or publish locally.
+
+Inherited rollout flag: `platform.public-artifact-integrity.enabled`, evaluated
+by the platform's governed feature-flag store for staged public distribution.
+Enabled permits verified promotion; disabled stops promotion. Neither state
+bypasses mandatory source/package/CI/CD checks. This package has no runtime
+flag evaluator, capability, or environment-variable override. Roll back by
+stopping promotion and disabling the affected workflow/channel; remove any
+temporary branch workflow admission after checks and merge. Never restore the
+removed administrative registry or reuse a removed npm version. See
+[ADR-0004](docs/adrs/adr-0004-quarantined-public-ci.md).
 <!-- END PLASIUS RELEASE INTEGRITY -->
