@@ -12,6 +12,20 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
   - (placeholder)
 
 - **Changed**
+  - (placeholder)
+
+- **Fixed**
+  - (placeholder)
+
+- **Security**
+  - (placeholder)
+
+## [1.0.24] - 2026-10-21
+
+- **Added**
+  - (placeholder)
+
+- **Changed**
   - Restore trusted push-only CI on the approved quarantined self-hosted group, with bounded validation, clean installation, credential isolation and final package admission.
 
 - **Fixed**
@@ -340,7 +354,7 @@ Never publish locally or manually promote versioned changelog sections. Rollback
 
 ---
 
-[Unreleased]: https://github.com/Plasius-LTD/images/compare/v1.0.23...HEAD
+[Unreleased]: https://github.com/Plasius-LTD/images/compare/v1.0.24...HEAD
 
 ## [1.0.0] - 2026-02-11
 
@@ -375,3 +389,4 @@ Never publish locally or manually promote versioned changelog sections. Rollback
 [1.0.21]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.21
 [1.0.22]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.22
 [1.0.23]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.23
+[1.0.24]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.24
