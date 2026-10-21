@@ -12,7 +12,7 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
   - (placeholder)
 
 - **Changed**
-  - (placeholder)
+  - Restore trusted push-only CI on the approved quarantined self-hosted group, with bounded validation, clean installation, credential isolation and final package admission.
 
 - **Fixed**
   - (placeholder)
@@ -330,13 +330,13 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 
 ## Release process (maintainers)
 
-1. Update `CHANGELOG.md` under **Unreleased** with user-visible changes.
-2. Bump version in `package.json` following SemVer (major/minor/patch).
-3. Move entries from **Unreleased** to a new version section with the current date.
-4. Tag the release in Git (`vX.Y.Z`) and push tags.
-5. Publish to npm (via CI/CD or `npm publish`).
+1. Record user-visible changes under **Unreleased**.
+2. Verify public visibility, production environment, npm trusted-publisher identity and the next unused version.
+3. Dispatch `.github/workflows/cd.yml` on `main` with `phase=prepare` and the appropriate `bump`.
+4. Review and merge the pipeline's release metadata PR after its required checks. The pipeline owns version/changelog promotion and release tags.
+5. Verify successful exact-main push CI, hosted production OIDC publication, public registry integrity/provenance and the matching GitHub release.
 
-> Tip: Use Conventional Commits in PR titles/bodies to make changelog updates easier.
+Never publish locally or manually promote versioned changelog sections. Rollback disables the affected workflow/channel without restoring the administrative registry.
 
 ---
 
