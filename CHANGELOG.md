@@ -8,6 +8,20 @@ The format is based on **[Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+- **Added**
+  - (placeholder)
+
+- **Changed**
+  - (placeholder)
+
+- **Fixed**
+  - (placeholder)
+
+- **Security**
+  - (placeholder)
+
+## [1.0.25] - 2026-10-25
+
 - Refresh npm dependency lockfile to current supported stable versions (weekly maintenance, 2026-10-25).
 
 - **Added**
@@ -356,7 +370,7 @@ Never publish locally or manually promote versioned changelog sections. Rollback
 
 ---
 
-[Unreleased]: https://github.com/Plasius-LTD/images/compare/v1.0.24...HEAD
+[Unreleased]: https://github.com/Plasius-LTD/images/compare/v1.0.25...HEAD
 
 ## [1.0.0] - 2026-02-11
 
@@ -392,3 +406,4 @@ Never publish locally or manually promote versioned changelog sections. Rollback
 [1.0.22]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.22
 [1.0.23]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.23
 [1.0.24]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.24
+[1.0.25]: https://github.com/Plasius-LTD/images/releases/tag/v1.0.25
